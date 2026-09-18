@@ -572,7 +572,7 @@
         document.getElementById("customer").textContent = esc(email);
         document.getElementById("docket-title").textContent = "Your schedule";
         document.getElementById("docket-sub").textContent = "100 lists, one a week, drawn from your email and order number. Bookmark this page.";
-        document.getElementById("deal").hidden = true;
+        document.getElementById("deal").style.display = "none";
       } else {
         document.getElementById("order").textContent = "GUM-" + String(Math.floor(100000 + Math.random() * 900000));
       }
