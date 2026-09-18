@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The 100</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,700;9..144,900,100&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #EEF0EC;
+    --paper: #FBFBF8;
+    --ink: #171B26;
+    --ink-2: #4A5164;
+    --muted: #7A8194;
+    --line: #CBD0D8;
+    --red: #CF3A2C;
+    --blue: #2A4FA3;
+    --blue-soft: #DCE4F7;
+    --red-soft: #F8DCD8;
+    --shadow: 0 1px 0 rgba(23,27,38,.06), 0 12px 32px -18px rgba(23,27,38,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #13161D;
+      --paper: #1B1F28;
+      --ink: #EEF0F4;
+      --ink-2: #B7BDCC;
+      --muted: #858CA0;
+      --line: #313746;
+      --red: #E8604F;
+      --blue: #7B9BEA;
+      --blue-soft: #232C44;
+      --red-soft: #3E2523;
+      --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #13161D;
+    --paper: #1B1F28;
+    --ink: #EEF0F4;
+    --ink-2: #B7BDCC;
+    --muted: #858CA0;
+    --line: #313746;
+    --red: #E8604F;
+    --blue: #7B9BEA;
+    --blue-soft: #232C44;
+    --red-soft: #3E2523;
+    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 32px -18px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--blue); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+  /* airmail stripe: the one flourish, reused as a rule */
+  .stripe {
+    height: 10px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--red) 0 14px,
+      var(--paper) 14px 22px,
+      var(--blue) 22px 36px,
+      var(--paper) 36px 44px
+    );
+  }
+
+  .draft {
+    background: var(--ink);
+    color: var(--ground);
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 8px 16px;
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; }
+
+  header.top {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding-block: 22px 10px;
+  }
+  .mark {
+    font-family: "Fraunces", Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -.01em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .mark small {
+    display: block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 400; font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .price-tag {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2);
+  }
+
+  /* hero */
+  .hero { padding-block: 44px 36px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--red);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-weight: 900;
+    font-size: clamp(38px, 6.2vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -.025em;
+    margin: 0 0 22px;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; font-weight: 700; color: var(--blue); }
+  .lede { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 58ch; margin: 0 0 30px; text-wrap: pretty; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 600 16px/1 "IBM Plex Sans", system-ui, sans-serif;
+    padding: 16px 22px; border-radius: 4px; border: 2px solid var(--ink);
+    text-decoration: none; cursor: pointer; background: var(--paper); color: var(--ink);
+    transition: transform .12s ease, background .12s ease;
+  }
+  .btn.primary { background: var(--ink); color: var(--ground); }
+  .btn:hover { transform: translateY(-1px); }
+  .btn .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 500; opacity: .8; }
+  .fine { font-size: 14px; color: var(--muted); margin: 18px 0 0; max-width: 60ch; }
+
+  /* docket */
+  .docket-section { padding-block: 10px 56px; }
+  .docket {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .docket-head {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 18px 22px 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .docket-head h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-variation-settings: "opsz" 72, "SOFT" 100;
+    font-weight: 700; font-size: 24px; margin: 0; letter-spacing: -.01em;
+  }
+  .docket-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .docket-meta {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px 22px;
+    padding: 14px 22px; background: var(--blue-soft);
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px;
+  }
+  .docket-meta b { display: block; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-size: 10.5px; margin-bottom: 2px; }
+  .docket-meta span { color: var(--ink); }
+
+  .sched { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .sched th {
+    text-align: left; font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    padding: 12px 22px 10px; border-bottom: 1px solid var(--line);
+  }
+  .sched td { padding: 11px 22px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .sched tr:last-child td { border-bottom: 0; }
+  .sched td.wk { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; width: 1%; }
+  .sched td.wk b { color: var(--red); font-weight: 500; }
+  .sched td.what { color: var(--ink-2); font-size: 14px; }
+  .sched tbody tr { animation: dealt .35s ease both; }
+  @keyframes dealt { from { opacity: .25; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .sched tbody tr { animation: none; } .btn:hover { transform: none; } }
+  .docket-foot { padding: 14px 22px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; color: var(--muted); border-top: 1px dashed var(--line); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  /* sections */
+  section.block { padding-block: 44px; border-top: 1px solid var(--line); }
+  .block h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 100;
+    font-weight: 900; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -.02em; line-height: 1.05;
+    margin: 0 0 26px; max-width: 22ch; text-wrap: balance;
+  }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; counter-reset: step; }
+  .step { position: relative; padding-top: 14px; border-top: 3px solid var(--ink); }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 34px; line-height: 1;
+    color: var(--red); display: block; margin-bottom: 10px;
+  }
+  .step h3 { margin: 0 0 8px; font-size: 19px; font-weight: 600; letter-spacing: -.01em; }
+  .step p { margin: 0; color: var(--ink-2); font-size: 15.5px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .ledger { background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 22px 24px; }
+  .ledger h3 { margin: 0 0 12px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .ledger.keep h3 { color: var(--blue); }
+  .ledger.drop h3 { color: var(--red); }
+  .ledger ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .ledger li { padding-left: 22px; position: relative; font-size: 15.5px; }
+  .ledger li::before { content: ""; position: absolute; left: 0; top: .55em; width: 10px; height: 10px; border-radius: 50%; }
+  .ledger.keep li::before { background: var(--blue); }
+  .ledger.drop li::before { background: transparent; border: 2px solid var(--red); width: 8px; height: 8px; }
+  .ledger p { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+
+  .faq { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  details { border-bottom: 1px solid var(--line); }
+  summary {
+    cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
+    padding: 18px 4px; font-weight: 600; font-size: 18px; letter-spacing: -.005em;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: "IBM Plex Mono", ui-monospace, monospace; color: var(--red); font-size: 20px; flex: none; }
+  details[open] summary::after { content: "\2212"; }
+  details p { margin: 0 0 20px; padding-inline: 4px; color: var(--ink-2); max-width: 62ch; }
+
+  .claim { background: var(--paper); border: 2px solid var(--ink); border-radius: 3px; padding: 22px 24px; margin-top: 28px; }
+  .claim h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 8px; }
+  .claim p { margin: 0 0 16px; color: var(--ink-2); font-size: 15.5px; max-width: 60ch; }
+  .claim form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+  .claim label { display: grid; gap: 6px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .claim input { font: 16px "IBM Plex Sans", system-ui, sans-serif; padding: 12px 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--ground); color: var(--ink); min-width: 0; }
+  .claim input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .claim .err { color: var(--red); font-size: 14px; margin: 10px 0 0; min-height: 1.2em; }
+  @media (max-width: 760px) { .claim form { grid-template-columns: 1fr; } }
+  .closer { text-align: left; padding-block: 56px 48px; }
+  .closer h2 { font-family: "Fraunces", Georgia, serif; font-variation-settings: "opsz" 144, "SOFT" 100; font-weight: 900; font-size: clamp(34px, 5vw, 56px); letter-spacing: -.025em; line-height: 1; margin: 0 0 24px; max-width: 18ch; text-wrap: balance; }
+
+  footer { padding-block: 26px 40px; color: var(--muted); font-size: 13.5px; }
+  footer .row { display: flex; gap: 8px 22px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  footer nav a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--line); }
+
+  @media (max-width: 760px) {
+    .steps, .two { grid-template-columns: 1fr; }
+    .sched td.what { display: none; }
+    .sched th.what { display: none; }
+    .sched td, .sched th { padding-inline: 16px; }
+    .docket-head, .docket-meta, .docket-foot { padding-inline: 16px; }
+    body { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="draft">Test run. The buy button is live at USD $1 while payments are being tested.</div>
+<div class="stripe" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top">The 100<small>working title</small></a>
+    <div class="price-tag">USD $20, once. Then silence.</div>
+  </header>
+
+  <section class="hero" id="top">
+    <p class="eyebrow">A paid service. Genuinely.</p>
+    <h1>Pay us $20. We sign you up to 100 mailing lists you have never heard of. <em>Then we leave you alone forever.</em></h1>
+    <p class="lede">One list a week, for 100 weeks, drawn at random from a pool of 520 of the strangest newsletters still in operation. Your inbox does the rest.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://mattitude8880.gumroad.com/l/cttbgp" id="cta-buy" target="_blank" rel="noopener">Get my schedule <span class="mono">$20</span></a>
+      <a class="btn" href="#sample">See a sample schedule</a>
+    </div>
+    <p class="fine">One payment. No account. No refunds, because the schedule is the product and you get it the moment you pay. You will never receive a single email from us.</p>
+  </section>
+
+  <section class="claim" id="schedule">
+    <h2>Already paid? Get your schedule.</h2>
+    <p>Type the email address you gave us at checkout and the order number from your Gumroad receipt. Your 100 lists are drawn from those two things, so the same details always give the same schedule. Bookmark the result.</p>
+    <form id="claim-form" autocomplete="off">
+      <label>Email you gave us<input type="email" id="claim-email" required placeholder="you@example.com"></label>
+      <label>Order number<input type="text" id="claim-order" required placeholder="From the receipt"></label>
+      <button class="btn primary" type="submit">Show my schedule</button>
+    </form>
+    <p class="err" id="claim-err" aria-live="polite"></p>
+  </section>
+
+  <section class="docket-section" id="sample">
+    <div class="docket" aria-live="polite">
+      <div class="docket-head">
+        <div>
+          <h2 id="docket-title">A sample schedule</h2>
+          <p id="docket-sub">Yours will look like this, with your details on it and 100 different lists.</p>
+        </div>
+        <button class="btn" type="button" id="deal">Deal me another</button>
+      </div>
+      <div class="docket-meta">
+        <div><b>Customer</b><span id="customer">Example Person</span></div>
+        <div><b>Order</b><span id="order">GUM-000000</span></div>
+        <div><b>Starts</b><span id="starts">Monday</span></div>
+        <div><b>Lists</b><span>100 of 520</span></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="sched">
+          <thead>
+            <tr><th>Week</th><th>You will be signed up to</th><th class="what">What to expect</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="docket-foot">
+        <span>Schedule generated at purchase. Bookmark it. We will not send it to you.</span>
+        <span>Substitutions shown here if a list closes.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <h3>Pay $20 on Gumroad</h3>
+        <p>Type the email address you want the chaos delivered to, and your name, because sign-up forms ask for names. That is everything we need.</p>
+      </div>
+      <div class="step">
+        <h3>Your schedule appears immediately</h3>
+        <p>100 lists, one per week, picked at random from the pool. Bookmark the page. It is the only thing we will ever give you, and it is the whole product.</p>
+      </div>
+      <div class="step">
+        <h3>We quietly do the typing</h3>
+        <p>From the following Monday, once a week, we fill in that week's sign-up form on your behalf. The list emails you directly. We do not.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="data">
+    <h2>What we keep, and what we throw away</h2>
+    <div class="two">
+      <div class="ledger keep">
+        <h3>We keep</h3>
+        <ul>
+          <li>The email address you gave us</li>
+          <li>Your name, as you typed it</li>
+          <li>Your Gumroad order number</li>
+          <li>The week you bought, not the day or the hour</li>
+          <li>Your schedule and its private link</li>
+        </ul>
+        <p>That is the whole database entry. There is nothing else to leak.</p>
+      </div>
+      <div class="ledger drop">
+        <h3>We never see or store</h3>
+        <ul>
+          <li>Your card, or the name on it</li>
+          <li>Your billing address</li>
+          <li>Your IP address or country</li>
+          <li>Anything Gumroad knows about the payment</li>
+        </ul>
+        <p>Gumroad takes the money and sends your receipt. We are not copied in.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <h2>Questions people ask, deadpan answers</h2>
+    <div class="faq">
+      <details>
+        <summary>Can I choose the lists?</summary>
+        <p>No. That is the point. The schedule is drawn at random from all 520, so a goat dairy and a submariners' association have exactly the same odds.</p>
+      </details>
+      <details>
+        <summary>Will you email me?</summary>
+        <p>Never. Not a welcome email, not a receipt (Gumroad sends that), not a newsletter, not a survey. If you ever receive an email claiming to be from us, it is not from us.</p>
+      </details>
+      <details>
+        <summary>Can I get a refund?</summary>
+        <p>No. The schedule is the service, and you have it the moment you pay. If you are in the EU or UK, you tick a box at checkout confirming you want the schedule generated immediately and waive the 14 day cooling-off period. If a list genuinely fails to sign you up, we swap in a replacement, which is the fix.</p>
+      </details>
+      <details>
+        <summary>How do I make it stop?</summary>
+        <p>Each list has its own unsubscribe link, and they all work, because we only pick lists that behave. If you want us to stop the remaining weeks entirely, email the address in the footer and we will halt your schedule.</p>
+      </details>
+      <details>
+        <summary>What if a list shuts down?</summary>
+        <p>Lists die. We check the whole pool every month, retire the dead ones and add replacements. If one of yours goes, your schedule page shows the substitute.</p>
+      </details>
+      <details>
+        <summary>Is this legal?</summary>
+        <p>You are subscribing yourself to public mailing lists. We just do the typing, on your instruction, with your consent recorded at checkout. The terms and privacy policy in the footer say the same thing at greater length.</p>
+      </details>
+      <details>
+        <summary>Why does this exist?</summary>
+        <p>We found it funny. Then we found 520 lists. Then it seemed a shame not to.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="closer">
+    <h2>Twenty dollars. One hundred strangers. Enjoy the chaos.</h2>
+    <div class="cta-row">
+      <a class="btn primary" href="https://mattitude8880.gumroad.com/l/cttbgp" id="cta-buy-2" target="_blank" rel="noopener">Get my schedule <span class="mono">$20</span></a>
+    </div>
+  </section>
+</div>
+
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+  <footer>
+    <div class="row">
+      <nav>
+        <a href="#">Terms of service</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">admin@[brand].com</a>
+      </nav>
+      <span>Draft preview. Brand name, links and legal pages are placeholders.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var POOL = [
+      ["A wildlife rehabilitation centre in Nebraska", "Monthly. Photos of owls in casts."],
+      ["A competitive sheepdog trials society in mid Wales", "Weekly in season. Results and grievances."],
+      ["A monastery that sells fruitcake by post", "Quarterly. Fruitcake."],
+      ["A regional lawn bowls association", "Fortnightly. Fixtures, weather, one obituary."],
+      ["A model railway club with strong opinions on gauge", "Monthly. Very long."],
+      ["A society for the preservation of lighthouses", "Monthly. Lighthouses."],
+      ["A goat dairy in Vermont", "Seasonal. Kidding updates."],
+      ["A ferret welfare charity", "Monthly. Adoption profiles."],
+      ["An amateur weather-recording network", "Daily digest. Barometric."],
+      ["A newsletter about municipal drainage", "Irregular. Surprisingly gripping."],
+      ["A retired submariners' association", "Quarterly. Reunions."],
+      ["A cheese cave in the Loire valley", "Monthly. In French."],
+      ["A fan club for a discontinued biscuit", "Whenever there is news. There is rarely news."],
+      ["A barbershop chorus in Saskatchewan", "Monthly. Rehearsal times."],
+      ["A Finnish sauna society", "Monthly. Steam."],
+      ["A group who restore vintage tractors", "Monthly. Rust."],
+      ["A parish bell-ringing guild", "Weekly. Peal reports."],
+      ["A cactus and succulent society", "Monthly. Show dates."],
+      ["A volunteer fire brigade's bake sale committee", "Twice a year. Slices."],
+      ["A society that tracks pothole repairs", "Weekly. Potholes."],
+      ["A club for collectors of airline sick bags", "Quarterly. Swaps."],
+      ["A very small museum of typewriters", "Monthly. Opening hours."],
+      ["A cricket club in Jutland", "Weekly in summer. Scorecards."],
+      ["A national moth recording scheme", "Monthly. Moths."],
+      ["A soap-box derby league", "Seasonal. Heats."],
+      ["A society for the appreciation of roundabouts", "Monthly. Roundabout of the month."],
+      ["A Belgian pigeon racing federation", "Weekly. Race results."],
+      ["A newsletter of unusual weather in Tasmania", "Whenever the weather is unusual."],
+      ["A beekeepers' cooperative", "Monthly. Swarm alerts."],
+      ["A community choir that only sings sea shanties", "Monthly. Shanties."],
+      ["A guild of thatched-roof restorers", "Quarterly. Reed prices."],
+      ["A Waikato possum-trapping collective", "Monthly. Tallies."],
+      ["A duck-decoy carving circle", "Monthly. Decoys."],
+      ["An association of competitive stone skimmers", "Seasonal. Skims."],
+      ["A society devoted to a single Victorian novelist", "Quarterly. Footnotes."],
+      ["A rural bus timetable notification list", "When the timetable changes. It changes."],
+      ["A yodelling club in the Austrian Tyrol", "Monthly. Audio attachments."],
+      ["A hedge-laying association", "Seasonal. Stakes and binders."],
+      ["A crossword setters' circle", "Monthly. Grudges."],
+      ["A canal towpath volunteers' group", "Fortnightly. Litter counts."],
+      ["A society for the study of garden gnomes", "Quarterly. Gnomes."],
+      ["A Norwegian lutefisk appreciation club", "Seasonal. Lye warnings."],
+      ["A regional drystone walling association", "Quarterly. Walls."],
+      ["A newsletter for owners of one specific 1970s hatchback", "Monthly. Parts wanted."],
+      ["A society of amateur cloud spotters", "Monthly. Clouds, ranked."],
+      ["A rural agricultural show's poultry section", "Annually, then reminders."],
+      ["A Scottish highland games heavy events circuit", "Seasonal. Caber updates."],
+      ["A fountain pen repair collective", "Monthly. Nibs."],
+      ["A society that campaigns for more public benches", "Monthly. Benches gained and lost."],
+      ["A local history group for a village of 300 people", "Monthly. Very detailed."],
+      ["A brass band in the Welsh valleys", "Monthly. Contest results."],
+      ["A club for owners of narrowboats", "Monthly. Lock closures."],
+      ["A Japanese bonsai society's English-language list", "Monthly. Pruning calendars."],
+      ["A hobbyist rocketry association", "Monthly. Launch windows."],
+      ["A newsletter about a single disused railway line", "Irregular. Overgrowth reports."],
+      ["A competitive marmalade society", "Annually. Awards."],
+      ["A guild of hand-loom weavers", "Quarterly. Warp and weft."],
+      ["A Dutch tulip bulb cooperative", "Seasonal. Bulb orders."],
+      ["A club for people who collect hotel key cards", "Quarterly. Swaps."],
+      ["A society devoted to the preservation of red telephone boxes", "Monthly. Boxes saved."],
+      ["An orienteering club in the Scottish Borders", "Fortnightly. Map corrections."],
+      ["A newsletter about tide tables for one small harbour", "Monthly. Tides."],
+      ["A rural cinema run by volunteers", "Monthly. One film."],
+      ["A carnivorous plant society", "Monthly. Feeding notes."],
+      ["A Canadian curling club", "Weekly in winter. Draws."],
+      ["A society for the appreciation of concrete architecture", "Monthly. Brutalism."],
+      ["An alpaca breeders' network", "Monthly. Fleece prices."],
+      ["A club that restores vintage jukeboxes", "Quarterly. Valves."],
+      ["A newsletter from a lighthouse keeper's cottage guesthouse", "Seasonal. Vacancies."],
+      ["A society of church organ enthusiasts", "Monthly. Recitals."],
+      ["A rural veterinary practice's farm client list", "Monthly. Lambing tips."],
+      ["A club for owners of vintage sewing machines", "Monthly. Bobbins."],
+      ["A society that maps abandoned mines", "Quarterly. Do not enter."],
+      ["A South Australian cactus nursery", "Seasonal. Spines."],
+      ["A club for people who race homing snails", "Annually. Results, eventually."],
+      ["A regional astronomy society", "Monthly. Cloud permitting."],
+      ["A newsletter from a Welsh slate quarry museum", "Quarterly. Slate."],
+      ["A fell-running club in the Lake District", "Weekly. Mud."],
+      ["A society for the preservation of milk floats", "Quarterly. Floats."],
+      ["A cider-pressing cooperative in Somerset", "Seasonal. Apples wanted."],
+      ["A guild of clock and watch repairers", "Monthly. Escapements."],
+      ["A kite-flying association on a windy beach", "Monthly. Wind."],
+      ["A newsletter about the wildlife of one particular pond", "Monthly. Newts."],
+      ["A society of vintage lawnmower collectors", "Seasonal. Racing fixtures."],
+      ["A Faroese knitting circle", "Monthly. Patterns."],
+      ["A club for owners of a discontinued home computer", "Monthly. Tape loading tips."],
+      ["A regional ploughing match committee", "Annually. Furrows."],
+      ["A society for the appreciation of bus shelters", "Monthly. Shelter of the month."],
+      ["A rural volunteer coastguard station", "Monthly. Callouts."],
+      ["A club for people who build model boats and sail them on a pond", "Monthly. Pond conditions."],
+      ["A Peruvian guinea pig breeders' association", "Monthly. In Spanish."],
+      ["A society of amateur bell-founders", "Rarely. Casting days."],
+      ["A newsletter from a very small island's community council", "Monthly. Ferry news."],
+      ["A club for enthusiasts of pre-war motorcycles", "Monthly. Oil leaks."],
+      ["A chutney and preserves competition circuit", "Seasonal. Jars."],
+      ["A society for the study of hedgehogs", "Monthly. Hedgehogs."],
+      ["A rural gliding club", "Weekly. Thermals."],
+      ["A guild of traditional rope makers", "Quarterly. Rope."],
+      ["A club for people who collect antique barbed wire", "Quarterly. Barbs."],
+      ["A newsletter about one particular Roman road", "Irregular. Milestones."],
+      ["A society for owners of Victorian greenhouses", "Seasonal. Glazing."]
+    ];
+
+    function shuffle(a) {
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+    function nextMonday() {
+      var d = new Date();
+      var day = d.getDay();
+      var add = ((8 - day) % 7) || 7;
+      d.setDate(d.getDate() + add);
+      return d;
+    }
+    function fmt(d) {
+      return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+    }
+    function seedFrom(str) {
+      var h = 2166136261;
+      for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+      return function () { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return h / 4294967296; };
+    }
+    function shuffleSeeded(a, rnd) {
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(rnd() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+    function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function deal(seed, email, order) {
+      var picks = (seed ? shuffleSeeded(POOL.slice(), seedFrom(seed)) : shuffle(POOL.slice())).slice(0, 100);
+      var start = nextMonday();
+      var rows = document.getElementById("rows");
+      var html = "";
+      for (var i = 0; i < picks.length; i++) {
+        var d = new Date(start); d.setDate(start.getDate() + i * 7);
+        html += '<tr style="animation-delay:' + (Math.min(i, 30) * 22) + 'ms">' +
+          '<td class="wk"><b>' + String(i + 1).padStart(3, "0") + '</b> &nbsp;' + fmt(d) + '</td>' +
+          '<td>' + picks[i][0] + '</td>' +
+          '<td class="what">' + picks[i][1] + '</td></tr>';
+      }
+      rows.innerHTML = html;
+      document.getElementById("starts").textContent = fmt(start);
+      if (seed) {
+        document.getElementById("order").textContent = esc(order);
+        document.getElementById("customer").textContent = esc(email);
+        document.getElementById("docket-title").textContent = "Your schedule";
+        document.getElementById("docket-sub").textContent = "100 lists, one a week, drawn from your email and order number. Bookmark this page.";
+        document.getElementById("deal").hidden = true;
+      } else {
+        document.getElementById("order").textContent = "GUM-" + String(Math.floor(100000 + Math.random() * 900000));
+      }
+    }
+    function claim(email, order) {
+      email = (email || "").trim().toLowerCase();
+      order = (order || "").trim().toUpperCase();
+      var err = document.getElementById("claim-err");
+      if (!email || email.indexOf("@") < 1 || !order) { err.textContent = "Both the email and the order number are needed."; return; }
+      err.textContent = "";
+      deal(email + "|" + order, email, order);
+      try { history.replaceState(null, "", "#schedule?email=" + encodeURIComponent(email) + "&order=" + encodeURIComponent(order)); } catch (e) {}
+      document.getElementById("sample").scrollIntoView({ behavior: "smooth" });
+    }
+    document.getElementById("deal").addEventListener("click", function () { deal(); });
+    document.getElementById("claim-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      claim(document.getElementById("claim-email").value, document.getElementById("claim-order").value);
+    });
+    deal();
+    (function () {
+      var m = /[#?&]email=([^&]*)&order=([^&]*)/.exec(location.hash + location.search);
+      if (m) {
+        var em = decodeURIComponent(m[1]), od = decodeURIComponent(m[2]);
+        document.getElementById("claim-email").value = em;
+        document.getElementById("claim-order").value = od;
+        claim(em, od);
+      }
+    })();
+  })();
+</script>
+
+</body></html>
